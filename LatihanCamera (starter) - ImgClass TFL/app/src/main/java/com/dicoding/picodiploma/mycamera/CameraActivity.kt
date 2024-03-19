@@ -11,23 +11,32 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.CameraSelector
+import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
+import androidx.camera.core.resolutionselector.AspectRatioStrategy
+import androidx.camera.core.resolutionselector.ResolutionSelector
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.mlkit.vision.MlKitAnalyzer
 import androidx.camera.view.CameraController.COORDINATE_SYSTEM_VIEW_REFERENCED
 import androidx.camera.view.LifecycleCameraController
 import androidx.core.content.ContextCompat
+import com.dicoding.picodiploma.mycamera.Helper.ImageClassifierHelper
 import com.dicoding.picodiploma.mycamera.databinding.ActivityCameraBinding
 import com.google.mlkit.vision.barcode.BarcodeScanner
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.barcode.common.Barcode
+import org.tensorflow.lite.task.vision.classifier.Classifications
+import java.text.NumberFormat
+import java.util.concurrent.Executors
 
 class CameraActivity : AppCompatActivity() {
     private lateinit var binding: ActivityCameraBinding
     private var cameraSelector: CameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
 
     private lateinit var barcodeScanner: BarcodeScanner
+
+    private lateinit var imageClassifierHelper: ImageClassifierHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,9 +53,10 @@ class CameraActivity : AppCompatActivity() {
     }
 
     private fun startCamera() {
+        val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
+
         // Terjadi ketika tidak realtime, kare barcode realtime tidak perlu ini
         /*
-        val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
 
         cameraProviderFuture.addListener({
             val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
@@ -75,27 +85,97 @@ class CameraActivity : AppCompatActivity() {
         }, ContextCompat.getMainExecutor(this))
         */
 
-        val options = BarcodeScannerOptions.Builder()
-            .setBarcodeFormats(Barcode.FORMAT_ALL_FORMATS)
-            .build()
-        barcodeScanner = BarcodeScanning.getClient(options)
-
-        val analyzer = MlKitAnalyzer(
-            listOf(barcodeScanner),
-            COORDINATE_SYSTEM_VIEW_REFERENCED,
-            ContextCompat.getMainExecutor(this)
-        ) { result: MlKitAnalyzer.Result? ->
-            // show result
-            showResult(result)
-        }
-
-        val cameraController = LifecycleCameraController(baseContext)
-        cameraController.setImageAnalysisAnalyzer(
-            ContextCompat.getMainExecutor(this),
-            analyzer
+        imageClassifierHelper = ImageClassifierHelper(
+            context = this,
+            classifierListener = object : ImageClassifierHelper.ClassifierListener {
+                override fun onError(error: String) {
+                    runOnUiThread {
+                        Toast.makeText(this@CameraActivity, error, Toast.LENGTH_SHORT).show()
+                    }
+                }
+                override fun onResults(results: List<Classifications>?, inferenceTime: Long) {
+                    runOnUiThread {
+                        results?.let { it ->
+                            if (it.isNotEmpty() && it[0].categories.isNotEmpty()) {
+                                println(it)
+                                val sortedCategories =
+                                    it[0].categories.sortedByDescending { it?.score }
+                                val displayResult =
+                                    sortedCategories.joinToString("\n") {
+                                        "${it.label} " + NumberFormat.getPercentInstance()
+                                            .format(it.score).trim()
+                                    }
+                                binding.tvResult.text = displayResult
+                                binding.tvInferenceTime.text = "$inferenceTime ms"
+                            } else {
+                                binding.tvResult.text = ""
+                                binding.tvInferenceTime.text = ""
+                            }
+                        }
+                    }
+                }
+            }
         )
-        cameraController.bindToLifecycle(this)
-        binding.viewFinder.controller = cameraController
+
+        cameraProviderFuture.addListener({
+            val resolutionSelector = ResolutionSelector.Builder()
+                .setAspectRatioStrategy(AspectRatioStrategy.RATIO_16_9_FALLBACK_AUTO_STRATEGY)
+                .build()
+            val imageAnalyzer = ImageAnalysis.Builder()
+                .setResolutionSelector(resolutionSelector)
+                .setTargetRotation(binding.viewFinder.display.rotation)
+                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                .setOutputImageFormat(ImageAnalysis.OUTPUT_IMAGE_FORMAT_RGBA_8888)
+                .build()
+            imageAnalyzer.setAnalyzer(Executors.newSingleThreadExecutor()) { image ->
+                imageClassifierHelper.classifyImage(image)
+            }
+
+            val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
+            val preview = Preview.Builder().build().also {
+                it.setSurfaceProvider(binding.viewFinder.surfaceProvider)
+            }
+            try {
+                cameraProvider.unbindAll()
+                cameraProvider.bindToLifecycle(
+                    this,
+                    cameraSelector,
+                    preview,
+                    imageAnalyzer
+                )
+            } catch (exc: Exception) {
+                Toast.makeText(
+                    this@CameraActivity,
+                    "Gagal memunculkan kamera.",
+                    Toast.LENGTH_SHORT
+                ).show()
+                Log.e(TAG, "startCamera: ${exc.message}")
+            }
+        }, ContextCompat.getMainExecutor(this))
+
+
+        // Ini untuk barcode
+//        val options = BarcodeScannerOptions.Builder()
+//            .setBarcodeFormats(Barcode.FORMAT_ALL_FORMATS)
+//            .build()
+//        barcodeScanner = BarcodeScanning.getClient(options)
+//
+//        val analyzer = MlKitAnalyzer(
+//            listOf(barcodeScanner),
+//            COORDINATE_SYSTEM_VIEW_REFERENCED,
+//            ContextCompat.getMainExecutor(this)
+//        ) { result: MlKitAnalyzer.Result? ->
+//            // show result
+//            showResult(result)
+//        }
+
+//        val cameraController = LifecycleCameraController(baseContext)
+//        cameraController.setImageAnalysisAnalyzer(
+//            ContextCompat.getMainExecutor(this),
+//            analyzer
+//        )
+//        cameraController.bindToLifecycle(this)
+//        binding.viewFinder.controller = cameraController
     }
 
     private var firstCall = true
