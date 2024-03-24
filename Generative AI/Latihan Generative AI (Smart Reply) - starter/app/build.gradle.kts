@@ -51,4 +51,6 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
 
+    implementation("com.google.android.gms:play-services-mlkit-smart-reply:16.0.0-beta1")
+
 }
