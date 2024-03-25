@@ -18,12 +18,23 @@ android {
     }
 
     buildTypes {
+        debug {
+            isMinifyEnabled = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+            buildConfigField("String", "API_KEY", "\"6dbd9a2549294a61bec7d1daea30bb92\"")
+            buildConfigField("String", "URL_INDO_HEALTH_NEWS", "\"https://newsapi.org/\"")
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            buildConfigField("String", "API_KEY", "\"6dbd9a2549294a61bec7d1daea30bb92\"")
+            buildConfigField("String", "URL_INDO_HEALTH_NEWS", "\"https://newsapi.org/\"")
         }
     }
     compileOptions {
@@ -36,6 +47,7 @@ android {
     buildFeatures {
         viewBinding = true
         mlModelBinding = true
+        buildConfig = true
     }
 }
 
@@ -55,7 +67,15 @@ dependencies {
     implementation("org.tensorflow:tensorflow-lite-metadata:0.4.4")
     implementation("org.tensorflow:tensorflow-lite-task-vision:0.4.4")
 
-    // Crop Image
+    // Image
     implementation("com.github.krokyze:ucropnedit:2.2.6-2")
+    implementation ("de.hdodenhof:circleimageview:3.1.0")
+
+
+    // Retrofit
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
 
 }
