@@ -2,19 +2,19 @@ package com.dicoding.asclepius.view
 
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
-import androidx.activity.result.ActivityResultCallback
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.dicoding.asclepius.R
 import com.dicoding.asclepius.databinding.ActivityMainBinding
 import com.dicoding.asclepius.helper.ImageClassifierHelper
+import com.dicoding.asclepius.view.ResultDetection.ResultActivity
 import org.tensorflow.lite.task.vision.classifier.Classifications
+import java.text.NumberFormat
 
 
 class MainActivity : AppCompatActivity() {
@@ -26,11 +26,19 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         with(binding){
+            setSupportActionBar(toolbar)
+            supportActionBar?.setDisplayHomeAsUpEnabled(true)
+            supportActionBar?.setDisplayShowHomeEnabled(true)
+            toolbar.navigationIcon?.setTint(resources.getColor(android.R.color.white))
+
+            toolbar.setNavigationOnClickListener {
+                onBackPressed()
+            }
+
             galleryButton.setOnClickListener {
                 startGallery()
             }
@@ -41,14 +49,19 @@ class MainActivity : AppCompatActivity() {
                     showToast(getString(R.string.empty_image_warning))
                 }
             }
+
+            btClearImage.setOnClickListener(View.OnClickListener {
+                currentImageUri = null
+                previewImageView.setImageResource(R.drawable.ic_place_holder)
+                analyzeButton.isEnabled= false
+                btClearImage.isEnabled = false
+            })
         }
     }
 
     private fun startGallery() {
         // TODO: Mendapatkan gambar dari Gallery.
         launcherGallery.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-
-
 
     }
 
@@ -63,17 +76,19 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-        private fun showImage() {
+    private fun showImage() {
         // TODO: Menampilkan gambar sesuai Gallery yang dipilih.
         currentImageUri?.let {
             Log.d("Image URI", "showImage: $it")
             binding.previewImageView.setImageURI(it)
             binding.analyzeButton.isEnabled= true
+            binding.btClearImage.isEnabled= true
         }
     }
 
     private fun analyzeImage(uri: Uri) {
         // TODO: Menganalisa gambar yang berhasil ditampilkan.
+        binding.divLoading.visibility = View.VISIBLE
         imageClassifierHelper = ImageClassifierHelper(
             context = this,
             contentResolver = contentResolver,
@@ -84,6 +99,7 @@ class MainActivity : AppCompatActivity() {
                 override fun onResults(results: List<Classifications>?, inferenceTime: Long) {
                     runOnUiThread {
                         results?.let { it ->
+                            binding.divLoading.visibility = View.GONE
                             if (it.isNotEmpty() && it[0].categories.isNotEmpty()) {
                                 println(it)
                                 val sortedCategories =
@@ -93,7 +109,11 @@ class MainActivity : AppCompatActivity() {
 //                                        "${it.label} " + NumberFormat.getPercentInstance()
 //                                            .format(it.score).trim()
 //                                    }
-                                showToast(it[0].categories[0].label)
+
+//                                showToast(it[0].categories[0].label)
+//                                currentImageUri?.let { it1 -> moveToResult(it1,it[0].categories[0].label, NumberFormat.getPercentInstance().format(it[0].categories[0].score)) }
+                                moveToResult(currentImageUri.toString(),it[0].categories[0].label, NumberFormat.getPercentInstance().format(it[0].categories[0].score))
+
 //                                binding.tvResult.text = displayResult
 //                                binding.tvInferenceTime.text = "$inferenceTime ms"
                             } else {
@@ -109,23 +129,11 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    @Deprecated("Deprecated in Java")
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if (requestCode == -1 && requestCode==101){
-            var result = data?.getStringExtra("DATA")
-            var resultUri: Uri? = null
-            if (result != null){
-                resultUri = Uri.parse(result)
-            }
-            currentImageUri = resultUri
-            showImage()
-        }
-    }
-
-    private fun moveToResult() {
+    private fun moveToResult(image:String, label: String, confidence: String) {
         val intent = Intent(this, ResultActivity::class.java)
+        intent.putExtra("DATA_URI", image)
+        intent.putExtra("DATA_LABEL", label)
+        intent.putExtra("DATA_CONFIDENCE", confidence)
         startActivity(intent)
     }
 
