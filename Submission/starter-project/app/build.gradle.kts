@@ -35,6 +35,7 @@ android {
     }
     buildFeatures {
         viewBinding = true
+        mlModelBinding = true
     }
 }
 
@@ -50,4 +51,11 @@ dependencies {
 
 
     // TODO: Tambahkan Library TensorFlow Lite
+    implementation("org.tensorflow:tensorflow-lite-support:0.4.4")
+    implementation("org.tensorflow:tensorflow-lite-metadata:0.4.4")
+    implementation("org.tensorflow:tensorflow-lite-task-vision:0.4.4")
+
+    // Crop Image
+    implementation("com.github.krokyze:ucropnedit:2.2.6-2")
+
 }
