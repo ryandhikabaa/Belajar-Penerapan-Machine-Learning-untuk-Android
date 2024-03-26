@@ -1,8 +1,10 @@
 package com.dicoding.asclepius.view
 
+import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -61,8 +63,32 @@ class MainActivity : AppCompatActivity() {
 
     private fun startGallery() {
         // TODO: Mendapatkan gambar dari Gallery.
-        launcherGallery.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+//        launcherGallery.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+        intent.addCategory(Intent.CATEGORY_OPENABLE)
+        intent.type = "image/*"
+        startActivityForResult(
+            Intent.createChooser(
+                intent,
+                getString(R.string.gallery)
+            ), 103)
 
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == 103) {
+                currentImageUri = data?.data
+
+                val contentResolver = applicationContext.contentResolver
+                val takeFlags: Int = Intent.FLAG_GRANT_READ_URI_PERMISSION or
+                        Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+
+                currentImageUri?.let { contentResolver.takePersistableUriPermission(it, takeFlags) }
+                showImage()
+            }
+        }
     }
 
     private val launcherGallery = registerForActivityResult(
@@ -74,6 +100,18 @@ class MainActivity : AppCompatActivity() {
         } else {
             Log.d("Photo Picker", "No media selected")
         }
+    }
+
+    private fun getRealPathFromURI(uri: Uri): String? {
+        val contentResolver = this.contentResolver
+        val projection = arrayOf(MediaStore.Images.Media.DATA)
+        val cursor = contentResolver.query(uri, projection, null, null, null)
+        cursor?.use {
+            val columnIndex = it.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+            it.moveToFirst()
+            return it.getString(columnIndex)
+        }
+        return null
     }
 
     private fun showImage() {

@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.dicoding.asclepius.data.response.ArticlesItem
 import com.dicoding.asclepius.databinding.ActivityDashboardBinding
 import com.dicoding.asclepius.view.Dashboard.adapter.NewsAdapter
+import com.dicoding.asclepius.view.HistoryDetection.HistoryActivity
 import com.dicoding.asclepius.view.MainActivity
 import com.dicoding.asclepius.view.NewsDetail.NewsDetailActivity
 import com.dicoding.asclepius.view.ViewModelFactory.ViewModelFactory
@@ -61,6 +62,11 @@ class DashboardActivity : AppCompatActivity() {
             var appVersion = applicationContext.packageManager.getPackageInfo(applicationContext.packageName, 0).versionName
 
             tvAppVersion.text = "Apps Ver. : $appVersion"
+
+            fabHistory.setOnClickListener(View.OnClickListener {
+                val intent = Intent(this@DashboardActivity, HistoryActivity::class.java)
+                startActivity(intent)
+            })
         }
     }
 
