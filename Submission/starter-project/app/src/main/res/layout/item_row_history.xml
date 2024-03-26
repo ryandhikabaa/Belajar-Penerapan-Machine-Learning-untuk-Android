@@ -29,27 +29,25 @@
             android:orientation="vertical"
             android:layout_margin="10dp">
 
-            <TextView
-                android:id="@+id/tvLabel"
+            <LinearLayout
+                android:id="@+id/divLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/dummyLongText"
-                android:textSize="16sp"
-                android:textColor="@color/black"
-                android:textStyle="bold"
-                android:ellipsize="end"
-                android:maxLines="1"/>
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:background="@drawable/rectangle_stroke_green"
+                android:paddingVertical="3dp"
+                android:paddingHorizontal="5dp">
+                <TextView
+                    android:id="@+id/result_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:text="Non Cancer" />
+            </LinearLayout>
 
-            <TextView
-                android:id="@+id/tvConfidence"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/dummyLongText"
-                android:textSize="14sp"
-                android:textColor="@color/colorCalmGrey"
-                android:ellipsize="end"
-                android:maxLines="1"
-                />
 
             <TextView
                 android:id="@+id/tvDate"

@@ -16,7 +16,7 @@ abstract class HistoryDatabase : RoomDatabase() {
             if (INSTANCE == null) {
                 synchronized(HistoryDatabase::class.java) {
                     INSTANCE = Room.databaseBuilder(context.applicationContext,
-                        HistoryDatabase::class.java, "history_database")
+                        HistoryDatabase::class.java, "history_database").allowMainThreadQueries()
                         .build()
                 }
             }

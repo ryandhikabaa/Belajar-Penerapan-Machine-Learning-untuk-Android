@@ -14,7 +14,7 @@
         android:background="?attr/colorPrimary"
         app:titleTextColor="@android:color/white"
         app:navigationIcon="@drawable/baseline_arrow_back_24"
-        app:title="Result Cancer Detection"/>
+        app:title="History Cancer Detection"/>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -23,7 +23,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            >
 
             <ImageView
                 android:id="@+id/result_image"
@@ -67,18 +68,17 @@
                         android:text="Non Cancer" />
                 </LinearLayout>
 
-
                 <TextView
+                    android:id="@+id/tvDate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="12sp"
                     android:text="@string/save_to_room"
-                    android:textColor="@color/colorRed"/>
+                    style="@style/TEXT"/>
 
                 <include
                     android:id="@+id/divMasukan"
                     layout="@layout/tips_menghindari_kanker"/>
-
 
             </LinearLayout>
 

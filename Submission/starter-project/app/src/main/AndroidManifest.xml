@@ -18,6 +18,9 @@
         android:theme="@style/Theme.Asclepius"
         tools:targetApi="31">
         <activity
+            android:name=".view.HistoryDetection.HistoryDetail.HistoryDetailActivity"
+            android:exported="false" />
+        <activity
             android:name=".view.HistoryDetection.HistoryActivity"
             android:exported="false" />
         <activity

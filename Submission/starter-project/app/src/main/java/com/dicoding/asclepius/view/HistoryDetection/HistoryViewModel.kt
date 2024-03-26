@@ -11,4 +11,6 @@ class HistoryViewModel (application: Application) : ViewModel() {
 
     fun getAllHitory(): LiveData<List<HistoryEntity>> = mHistoryRepository.getAllHistory()
 
+    fun deleteAll() = mHistoryRepository.deleteAll()
+
 }

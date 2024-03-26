@@ -23,6 +23,17 @@
             android:id="@+id/rvHistory"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:listitem="@layout/item_row_history" />
+            tools:listitem="@layout/item_row_history"
+            />
+
+        <TextView
+            android:id="@+id/tvHistoryKosong"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/history_kosong"
+            android:textSize="16sp"
+            android:gravity="center"
+            style="@style/TEXT"
+            android:visibility="gone"/>
     </LinearLayout>
 </RelativeLayout>

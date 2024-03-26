@@ -19,6 +19,8 @@ class HistoryRepository(application: Application)  {
 
     fun getAllHistory(): LiveData<List<HistoryEntity>> = mHistoryDao.getAllHistory()
 
+    fun deleteAll() = mHistoryDao.deleteAll()
+
     fun insert(historyEntity: HistoryEntity) {
         executorService.execute { mHistoryDao.insert(historyEntity) }
     }
