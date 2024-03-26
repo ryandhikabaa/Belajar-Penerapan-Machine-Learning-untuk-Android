@@ -11,6 +11,7 @@ import com.dicoding.asclepius.data.response.ArticlesItem
 import com.dicoding.asclepius.databinding.ActivityDashboardBinding
 import com.dicoding.asclepius.view.Dashboard.adapter.NewsAdapter
 import com.dicoding.asclepius.view.MainActivity
+import com.dicoding.asclepius.view.NewsDetail.NewsDetailActivity
 import com.dicoding.asclepius.view.ViewModelFactory.ViewModelFactory
 import com.google.android.material.snackbar.Snackbar
 
@@ -56,6 +57,10 @@ class DashboardActivity : AppCompatActivity() {
                 val intent = Intent(this@DashboardActivity, MainActivity::class.java)
                 startActivity(intent)
             })
+
+            var appVersion = applicationContext.packageManager.getPackageInfo(applicationContext.packageName, 0).versionName
+
+            tvAppVersion.text = "Apps Ver. : $appVersion"
         }
     }
 
@@ -65,9 +70,9 @@ class DashboardActivity : AppCompatActivity() {
         binding.rvArticle.adapter = adapter
         adapter.setOnItemClickCallback(object : NewsAdapter.OnItemClickCallback {
             override fun onItemClicked(data: ArticlesItem) {
-//                val intent = Intent(this@DashboardActivity, DetailUserActivity::class.java)
-//                intent.putExtra("USERS_CLICKED", data)
-//                startActivity(intent)
+                val intent = Intent(this@DashboardActivity, NewsDetailActivity::class.java)
+                intent.putExtra("NEWS_CLICKED", data)
+                startActivity(intent)
             }
         })
     }

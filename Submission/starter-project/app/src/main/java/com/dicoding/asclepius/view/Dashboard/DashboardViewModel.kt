@@ -54,6 +54,9 @@ class DashboardViewModel(application: Application) : ViewModel() {
 //                                Cek karena ada data dari servere yang sudah di remove,
 //                                secara ui dan ux apabila tetap ditampilkan kurang pas, maka tidak usah di add ke list
                                 article?.title != "[Removed]"
+                                article?.description != null
+                                article?.content != null
+                                article?.urlToImage != null
                             }
                             _listItem.value = filteredArticles
                         }

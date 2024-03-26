@@ -7,115 +7,125 @@
     android:orientation="vertical"
     tools:context=".view.Dashboard.DashboardActivity">
 
-    <LinearLayout
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-        <RelativeLayout
-            android:id="@+id/divTop"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="210dp"
-                android:scaleType="fitXY"
-                android:layout_marginTop="-13dp"
-                android:src="@drawable/cancer_bg"/>
-
-            <LinearLayout
-                android:id="@+id/divTop2"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:paddingBottom="20dp">
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp">
-                    <TextView
-                        android:id="@+id/tvAppVersion"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="11sp"
-                        android:text="App Version : "
-                        android:textColor="@color/white"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginTop="15dp"/>
-
-                </RelativeLayout>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Cancer Detection App"
-                    android:textColor="@color/white"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    android:layout_marginTop="10dp"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:text="Performance by Ryandhika"
-                    android:textColor="@color/white"
-                    android:textSize="14sp"
-                    android:textStyle="italic" />
-
-                <Button
-                    android:id="@+id/btDetectionHere"
-                    android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:layout_marginHorizontal="20dp"
-                    android:layout_marginTop="25dp"
-                    android:text="@string/cancer_detection"
-                    android:drawableLeft="@drawable/baseline_document_scanner_24"
-                    android:backgroundTint="@color/colorPrimarySoft"
-                    android:drawablePadding="30dp"
-                    android:textColor="@color/white"/>
-
-
-            </LinearLayout>
-
-
-
-        </RelativeLayout>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvArticle"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-        <RelativeLayout
+        android:layout_height="match_parent">
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/divLoading"
-            android:background="@color/blackTransparent"
-            android:visibility="gone">
-            <ProgressBar
-                android:layout_centerInParent="true"
-                android:id="@+id/progressBar"
-                style="?android:attr/progressBarStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="visible"/>
-        </RelativeLayout>
-    </LinearLayout>
+            android:orientation="vertical"
+            android:gravity="center">
+            <RelativeLayout
+                android:id="@+id/divTop"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="210dp"
+                    android:scaleType="fitXY"
+                    android:layout_marginTop="-13dp"
+                    android:src="@drawable/cancer_bg"/>
+
+                <LinearLayout
+                    android:id="@+id/divTop2"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:paddingBottom="20dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp">
+                        <TextView
+                            android:id="@+id/tvAppVersion"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="11sp"
+                            android:text="App Version : "
+                            android:textColor="@color/white"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginTop="15dp"/>
+
+                    </RelativeLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Cancer Detection App"
+                        android:textColor="@color/white"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:layout_marginTop="10dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="Performance by Ryandhika"
+                        android:textColor="@color/white"
+                        android:textSize="14sp"
+                        android:textStyle="italic" />
+
+                    <Button
+                        android:id="@+id/btDetectionHere"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:layout_marginHorizontal="20dp"
+                        android:layout_marginTop="25dp"
+                        android:text="@string/cancer_detection"
+                        android:drawableLeft="@drawable/baseline_document_scanner_24"
+                        android:backgroundTint="@color/colorPrimarySoft"
+                        android:drawablePadding="30dp"
+                        android:textColor="@color/white"/>
+
+
+                </LinearLayout>
+
+
+
+            </RelativeLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvArticle"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+            <RelativeLayout
+                android:id="@+id/divLoading"
+                android:layout_width="match_parent"
+                android:layout_height="455dp"
+                android:visibility="gone">
+
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    style="?android:attr/progressBarStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:visibility="visible" />
+            </RelativeLayout>
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabFav"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="16dp"
-        app:srcCompat="@drawable/baseline_history_24"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
-        android:backgroundTint="#CAC7C7"
-        app:tint="@color/colorPrimary"/>
+        android:layout_gravity="bottom|end"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="@color/white"
+        app:srcCompat="@drawable/baseline_history_24"
+        app:tint="@color/colorPrimary" />
 
 
 

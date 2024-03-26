@@ -7,14 +7,14 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.dicoding.asclepius.data.response.ArticlesItem
-import com.dicoding.asclepius.databinding.ItemRowUsersBinding
+import com.dicoding.asclepius.databinding.ItemRowNewsBinding
 
 class NewsAdapter  : ListAdapter<ArticlesItem, NewsAdapter.MyViewHolder>(DIFF_CALLBACK) {
 
     private lateinit var onItemClickCallback: OnItemClickCallback
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        val binding = ItemRowUsersBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = ItemRowNewsBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return MyViewHolder(binding)
     }
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
@@ -25,12 +25,17 @@ class NewsAdapter  : ListAdapter<ArticlesItem, NewsAdapter.MyViewHolder>(DIFF_CA
         }
 
     }
-    class MyViewHolder(val binding: ItemRowUsersBinding) : RecyclerView.ViewHolder(binding.root) {
+    class MyViewHolder(val binding: ItemRowNewsBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(news: ArticlesItem){
-            binding.tvNameUsers.text = news.title
-            Glide.with(binding.root)
-                .load(news.urlToImage)
-                .into(binding.ivUsers)
+            with(binding){
+                tvTitleNews.text = news.title
+                tvDesc.text = news.description
+                tvPublished.text = news.publishedAt?.substring(0, 10)
+                Glide.with(root)
+                    .load(news.urlToImage)
+                    .into(ivNews)
+            }
+
         }
     }
 
